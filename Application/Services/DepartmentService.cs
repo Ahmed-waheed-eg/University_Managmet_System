@@ -75,6 +75,27 @@ namespace Application.Services
             return (false, null, "this Name not found.");
         }
 
+        public async Task<(bool Success,string message)> UpdateAsync(DepartmentDTO dto)
+        {
+            var EntityToUpdate = await _departmentRepositiry.GetByIdAsync(dto.ID);
+            if (EntityToUpdate == null)
+            {
+                return( false,$"There is No Department with this ID ( {dto.ID} ).");
+            }
+            bool NameExists = await _departmentRepositiry.AnyAsync(x => x.Name == dto.Name );
+            if(NameExists)
+            {
+                return (false, "This Department Name already exists.");
+            }
+
+            EntityToUpdate.Name=dto.Name;
+            EntityToUpdate.Description=dto.Description;
+            _departmentRepositiry.Update(EntityToUpdate);
+            if(await _unitOfWork.IsCompleteAsync())
+            return (true, "Updated Successfully.");
+
+            return (false, "Error in save changes.");
+        }
 
         public async Task<IEnumerable<Department>>GetAll()
         {

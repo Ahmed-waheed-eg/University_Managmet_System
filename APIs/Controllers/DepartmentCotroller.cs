@@ -74,6 +74,22 @@ namespace APIs.Controllers
         }
 
 
+        [HttpPut("Update")]
+        public async Task<IActionResult> Update([FromBody] DepartmentDTO dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var (success, message) = await _departmentService.UpdateAsync(dto);
+            if (success)
+            {
+                return Ok(new { success = true, message = message });
+            }
+            return Conflict(new { success = false, message = message });
+        }
+
+
         [HttpDelete]
         public async Task<IActionResult> delete(int id)
         {

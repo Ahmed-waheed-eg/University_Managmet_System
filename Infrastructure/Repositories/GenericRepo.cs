@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Application.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 
 namespace Infrastructure.Repositories
@@ -42,6 +43,11 @@ namespace Infrastructure.Repositories
         public void Commit()
         {
             _context.SaveChanges();
+        }
+
+        public async Task<bool> AnyAsync(Expression<Func<T,bool>>predicate)
+        {
+            return await _context.Set<T>().AnyAsync(predicate);
         }
     }
 }
