@@ -9,7 +9,6 @@ namespace Application.Interfaces
 {
     public interface IDepartmentRepositiry : IRepository<Department>
     {
-        Task<Department> GetByName(string name);
         Task<IEnumerable<Department>> GetAllAsync();
     }
 }

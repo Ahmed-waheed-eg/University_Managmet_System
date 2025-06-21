@@ -49,5 +49,11 @@ namespace Infrastructure.Repositories
         {
             return await _context.Set<T>().AnyAsync(predicate);
         }
+
+        public async Task<T> GetByNameAsync(string name)
+        {
+            return await _dbSet.FirstOrDefaultAsync(e => EF.Property<string>(e, "Name") == name);
+
+        }
     }
 }

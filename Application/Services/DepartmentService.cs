@@ -22,7 +22,7 @@ namespace Application.Services
 
         public async Task<(bool Success,int id, string ErrorMessage)> Create(DepartmentDTO dto)
         {
-            var exists= await _departmentRepositiry.GetByName(dto.Name);
+            var exists= await _departmentRepositiry.GetByNameAsync(dto.Name);
             if (exists != null)
             {
                 return (false, 0, "This Department alredy Exist.");
@@ -67,7 +67,7 @@ namespace Application.Services
         }
         public async Task<(bool Success, DepartmentDTO dto, string message)> GetOne(string Name)
         {
-            var de = await _departmentRepositiry.GetByName(Name);
+            var de = await _departmentRepositiry.GetByNameAsync(Name);
             if (de != null)
             {
                 return (true, new DepartmentDTO { ID = de.Id, Name = de.Name, Description = de.Description }, "this ID is found.");

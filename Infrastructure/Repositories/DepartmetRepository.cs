@@ -24,10 +24,7 @@ namespace Infrastructure.Repositories
            return await _context.Departments.OrderBy(x => x.Name).ToListAsync();
         }
 
-        public async Task<Department> GetByName(string name)
-        {
-            return  await _context.Departments.SingleOrDefaultAsync(x=>x.Name==name);
-        }
+      
 
        
        

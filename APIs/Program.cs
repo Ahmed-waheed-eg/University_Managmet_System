@@ -18,8 +18,12 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(GenericRepo<>));
 builder.Services.AddScoped<DepartmentService>();
+builder.Services.AddScoped<LevelService>();
+builder.Services.AddScoped<SemesterServices>();
 builder.Services.AddScoped<IUnitOfWork, UniteOfWork>();
 builder.Services.AddScoped<IDepartmentRepositiry,DepartmetRepository>();
+builder.Services.AddScoped<ILevelRepositiry, LevelReopsitoriy>();
+builder.Services.AddScoped<ISemesterRepository, SemesterRepository>();
 
 
 var app = builder.Build();
