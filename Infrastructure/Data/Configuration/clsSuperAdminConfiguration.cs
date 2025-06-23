@@ -15,7 +15,7 @@ namespace Infrastructure.Data.Configuration
         {
             builder.ToTable("SuperAdmins");
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.FullName).IsRequired().HasMaxLength(100);
+            builder.Property(x => x.Name).IsRequired().HasMaxLength(100);
             builder.Property(x => x.Email).IsRequired().HasMaxLength(100);
             builder.Property(x => x.PasswordHash).IsRequired();
             builder.Property(x => x.PhoneNumber).HasMaxLength(15);
