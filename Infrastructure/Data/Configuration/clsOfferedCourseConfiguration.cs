@@ -15,8 +15,13 @@ namespace Infrastructure.Data.Configuration
         {
             builder.ToTable("OfferedCourses");
             builder.HasKey(x=>x.Id);
+            builder.Property(x=>x.DepartmentId).IsRequired();
+            builder.HasOne(x => x.Department).WithMany(o => o.OfferedCourses).HasForeignKey(x => x.DepartmentId).OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne(x => x.Level).WithMany(o => o.OfferedCourses).HasForeignKey(x => x.LevelId).OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne(x => x.Course).WithMany(o=>o.OfferedCourses).HasForeignKey(x=>x.CourseId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(x => x.Semester).WithMany(o => o.OfferedCourses).HasForeignKey(x => x.SemesterId).OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasOne(x => x.Course).WithMany(o=>o.OfferedCourses).HasForeignKey(x=>x.CourseId);  
+
         }
     }
 }

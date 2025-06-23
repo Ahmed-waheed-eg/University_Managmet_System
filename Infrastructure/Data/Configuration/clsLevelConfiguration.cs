@@ -19,6 +19,7 @@ namespace Infrastructure.Data.Configuration
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Name).IsRequired();
             builder.HasMany(i => i.Semesters).WithOne(x => x.Level).HasForeignKey(x => x.LevelId);
+            builder.HasMany(i => i.OfferedCourses).WithOne(x => x.Level).HasForeignKey(x => x.LevelId);
         }
     }
 }

@@ -17,6 +17,7 @@ namespace Infrastructure.Data.Configuration
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Name).IsRequired();
             builder.Property(x => x.Code).IsRequired().HasMaxLength(20);
+            builder.Property(x => x.Hours).IsRequired();
 
 
         }

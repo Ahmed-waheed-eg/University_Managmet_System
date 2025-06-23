@@ -15,6 +15,7 @@ namespace Domain.Entities
         public Department Department { get; set; }
 
         public ICollection<Semester> Semesters { get; set; }
-         
+        public ICollection<OfferedCourse> OfferedCourses { get; set; }
+
     }
 }

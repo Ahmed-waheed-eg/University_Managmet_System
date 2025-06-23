@@ -24,6 +24,8 @@ public void Configure(EntityTypeBuilder<Department> builder)
             builder.HasMany(x=>x.Levels)
                 .WithOne(x => x.Department).HasForeignKey(x=>x.DepartmentId);
 
+            builder.HasMany(x => x.OfferedCourses).WithOne(x => x.Department)
+                .HasForeignKey(x => x.DepartmentId);
 
         }
     }

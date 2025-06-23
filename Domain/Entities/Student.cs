@@ -6,7 +6,18 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    internal class Student
+    public class Student
     {
+
+        public int Id { get; set; }
+        public string FullName { get; set; }
+        public string Email { get; set; }
+        public string PasswordHash { get; set; }
+        public int NationalId { get; set; }
+
+
+        public ICollection<Enrollment> Enrollments { get; set; } 
+
+       
     }
 }
