@@ -2,6 +2,7 @@
 using Application.Interfaces;
 using Application.Services;
 using Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -21,6 +22,7 @@ namespace APIs.Controllers
 
 
         [HttpGet("GetAll")]
+        [Authorize(Roles = "SuperAdmin")]
         public async Task<ActionResult<DepartmentDTO>>GetAll()
         {
             var Dto=await _departmentService.GetAll();
