@@ -90,6 +90,7 @@ builder.Services.AddScoped<IDepartmentRepositiry,DepartmetRepository>();
 builder.Services.AddScoped<ILevelRepositiry, LevelReopsitoriy>();
 builder.Services.AddScoped<ISemesterRepository, SemesterRepository>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 
 
 

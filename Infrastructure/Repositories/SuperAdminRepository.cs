@@ -13,17 +13,17 @@ namespace Infrastructure.Repositories
     public class SuperAdminRepository
      : GenericRepo<SuperAdmin>, ISuperAdminRepository
     {
-        private readonly ApplicationDbContext _context;
+      private readonly ApplicationDbContext _context;
         public SuperAdminRepository(ApplicationDbContext context) : base(context)
         {
             _context = context;
         }
-        public async Task<SuperAdmin> GetByEmailAsync(string email)
-        {
-            return await _context.SuperAdmins
-                .FirstOrDefaultAsync(u => u.Email == email);
-        }
 
-        // You can add more methods specific to SuperAdmin if needed
+        public Task<SuperAdmin> GetByEmailAsync(string email)
+        {
+
+            return _context.SuperAdmins
+                .FirstOrDefaultAsync(admin => admin.Email == email);
+        }
     }
 }

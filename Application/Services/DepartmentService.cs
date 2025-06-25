@@ -97,10 +97,17 @@ namespace Application.Services
             return (false, "Error in save changes.");
         }
 
-        public async Task<IEnumerable<Department>>GetAll()
+        public async Task<IEnumerable<DepartmentDTO>>GetAll()
         {
-            return await _departmentRepositiry.GetAllAsync();
-           
+
+            var departments = await _departmentRepositiry.GetAllAsync();
+            return departments.Select(d => new DepartmentDTO
+            {
+                ID = d.Id,
+                Name = d.Name,
+                Description = d.Description
+            });
+
         }
 
     }

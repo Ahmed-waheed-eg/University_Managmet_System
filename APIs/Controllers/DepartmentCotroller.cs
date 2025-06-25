@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 namespace APIs.Controllers
 {
     [Route("api/Department")]
+    [Authorize(Roles = "SuperAdmin")]
     [ApiController]
     public class DepartmentCotroller : ControllerBase
     {
@@ -22,7 +23,8 @@ namespace APIs.Controllers
 
 
         [HttpGet("GetAll")]
-        [Authorize(Roles = "SuperAdmin")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+
         public async Task<ActionResult<DepartmentDTO>>GetAll()
         {
             var Dto=await _departmentService.GetAll();

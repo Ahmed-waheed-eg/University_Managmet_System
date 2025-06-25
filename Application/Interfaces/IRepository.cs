@@ -17,7 +17,7 @@ namespace Application.Interfaces
         public void Commit();
         Task<bool> AnyAsync(Expression<Func<T, bool>> predicate);
         Task<T> GetByNameAsync(string name);
-
+        Task<IEnumerable<T>> GetAllAsync();
 
     }
 }

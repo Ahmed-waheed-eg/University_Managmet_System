@@ -10,16 +10,12 @@ using Application.Interfaces;
 namespace Application.Services
 {
     public class LoginServices 
+        (ISuperAdminRepository _superAdminRepository,
+        IPasswordHasher _passwordHasher,
+        IAdminRepository _adminRepository,
+        TokenService _tokenService)
     {
-        private readonly ISuperAdminRepository _superAdminRepository;
-        private readonly IPasswordHasher _passwordHasher;
-        public readonly TokenService _tokenService;
-        public LoginServices(ISuperAdminRepository superAdminRepository, IPasswordHasher passwordHasher, TokenService tokenService)
-        {
-            _superAdminRepository = superAdminRepository;
-            _passwordHasher = passwordHasher;
-            this._tokenService = tokenService;
-        }
+       
         public async Task<AuthresponsetDTO> LoginSuperAdminAsync(string Email, string password)
         {
 
@@ -41,5 +37,27 @@ namespace Application.Services
             };
 
         }
+
+
+        public async Task<AuthresponsetDTO> LoginAdminAsync(string Email, string password)
+        {
+            var admin = await _adminRepository.GetByEmailAsync(Email);
+            if (admin == null)
+            {
+                return null; // User not found
+            }
+            if (!_passwordHasher.VerifyPassword(password, admin.PasswordHash))
+            {
+                return null; // Invalid password
+            }
+            var token = _tokenService.CreateToken(admin.Id, admin.Name, Domain.Enums.UserRole.Admin);
+            return new AuthresponsetDTO
+            {
+                Token = token,
+                FullName = admin.Name,
+                Role = "Admin"
+            };
+        }
+
     }
 }
