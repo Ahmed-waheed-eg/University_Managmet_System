@@ -76,5 +76,11 @@ namespace Infrastructure.Repositories
         }
 
 
+        public async Task<bool> IsLevelNameExistsInDepartment(string levelName, int departmentId)
+        {
+            return await _context.Levels.AnyAsync(l => l.Name == levelName && l.DepartmentId == departmentId);
+        }
+
+
     }
 }

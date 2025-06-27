@@ -99,6 +99,23 @@ namespace APIs.Controllers
         }
 
 
+
+        [HttpPost("Activate/{semesterId}")]
+        public async Task<IActionResult> ActivateSemester(int semesterId)
+        {
+            if (semesterId <= 0)
+            {
+                return BadRequest("Invalid semester ID.");
+            }
+            var success = await _semesterServices.ActiveSemesterAsync(semesterId);
+            if (success)
+            {
+                return Ok(new { success = true, message = "Semester activated successfully." });
+            }
+            return NotFound(new { success = false, message = "Semester not found or activation failed." });
+        }
+
+
     }
 
 }

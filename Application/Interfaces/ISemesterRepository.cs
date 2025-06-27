@@ -13,6 +13,7 @@ namespace Application.Interfaces
         
        
         Task<IEnumerable<Semester>> GetAllByLevelIdAsync(int levelId);
+        Task<bool> ActiveSemesterAsync(int SemesterID);
 
     }
 }

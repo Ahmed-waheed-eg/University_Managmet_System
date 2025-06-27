@@ -128,5 +128,15 @@ namespace Application.Services
             return (false, "Error in saving changes");
         }
 
+        public async Task<bool> ActiveSemesterAsync(int semesterId)
+        {
+            var semester = await _semesterRepository.GetByIdAsync(semesterId);
+            if (semester == null||semester.IsActive)
+            {
+                return false;
+            }
+            return await _semesterRepository.ActiveSemesterAsync(semesterId);
+        }
+
     }
 }

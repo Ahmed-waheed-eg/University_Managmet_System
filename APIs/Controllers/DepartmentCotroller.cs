@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 namespace APIs.Controllers
 {
     [Route("api/Department")]
-    [Authorize(Roles = "SuperAdmin")]
+   // [Authorize(Roles = "SuperAdmin")]
     [ApiController]
     public class DepartmentCotroller : ControllerBase
     {

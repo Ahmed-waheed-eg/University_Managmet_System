@@ -1,9 +1,9 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
-using Application.Interfaces;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,11 +15,13 @@ namespace Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILevelRepositiry _levelRepositiry;
         private readonly ISemesterRepository _semesterRepository;
-        public LevelService(IUnitOfWork unitOfWork, ILevelRepositiry levelRepositiry, ISemesterRepository semesterRepository)
+        private readonly IDepartmentRepositiry _departmentRepositiry;
+        public LevelService(IUnitOfWork unitOfWork, ILevelRepositiry levelRepositiry,  ISemesterRepository semesterRepository, IDepartmentRepositiry departmentRepository)
         {
             _unitOfWork = unitOfWork;
             _levelRepositiry = levelRepositiry;
             _semesterRepository = semesterRepository;
+            _departmentRepositiry = departmentRepository;
         }
 
         public async Task<(bool Success, int id, string ErrorMessage)> CreateAsync(LevelDTO dto)
@@ -37,6 +39,43 @@ namespace Application.Services
             }
             return (false, 0, "Error in saving changes");
         }
+
+
+
+        public async Task<(bool Success, int id, string ErrorMessage)> CreateWithSemesterAsync(LevelDTO dto)
+        {
+            var DepartEX= await _departmentRepositiry.GetByIdAsync(dto.DepartmentId);
+            var exists = await _levelRepositiry.IsLevelNameExistsInDepartment(dto.Name, dto.DepartmentId);
+            if (exists)
+            {
+                return (false, 0, "This Level already exists.");
+            }
+            if (DepartEX == null)
+            {
+                return (false, 0, "This Department does not exist.");
+            }
+            var level = new Level { Name = dto.Name, DepartmentId = dto.DepartmentId };
+            await _levelRepositiry.AddAsync(level);
+            if (await _unitOfWork.IsCompleteAsync())
+            {
+                // Create default semesters for the new level
+                for (int i = 1; i <= 3; i++) // Assuming 2 semesters per level
+                {
+                    var semester = new Semester
+                    {
+                        Name = $"Semester {i},{level.Name}",
+                        LevelId = level.Id,
+                        
+                    };
+                    await _semesterRepository.AddAsync(semester);
+                    
+                }
+                _semesterRepository.Commit();
+                return (true, level.Id, "Created Successfully");
+            }
+            return (false, 0, "Error in saving changes");
+        }
+
 
 
         public async Task<(bool Success, string ErrorMessage)> DeleteAsync(int Id)
@@ -104,6 +143,7 @@ namespace Application.Services
         }
 
 
+   
 
     }
 }

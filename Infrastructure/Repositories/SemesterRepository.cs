@@ -35,5 +35,37 @@ namespace Infrastructure.Repositories
                 .ToListAsync();
 
         }
+
+        public async Task<bool> ActiveSemesterAsync(int semesterID)
+        {
+            var semester = await _context.Semesters.FindAsync(semesterID);
+            if (semester == null)
+            {
+                return false;
+            }
+            var currentActiveSemester = await _context.Semesters.Where(s => s.IsActive).ToListAsync();
+            if (currentActiveSemester.Count > 0)
+            {
+                foreach (var item in currentActiveSemester)
+                {
+                    item.IsActive = false;
+                    _context.Semesters.Update(item);
+                }
+            }
+            var ActivatedSemesters = await _context.Semesters.Where(s => s.Name == semester.Name).ToListAsync();
+
+            if (ActivatedSemesters.Count > 0)
+            {
+                foreach (var item in ActivatedSemesters)
+                {
+                    item.IsActive = true;
+                    _context.Semesters.Update(item);
+                }
+            }
+
+
+            return await _context.SaveChangesAsync() > 0;
+        }
+
     }
 }

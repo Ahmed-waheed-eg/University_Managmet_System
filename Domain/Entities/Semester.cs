@@ -13,6 +13,8 @@ namespace Domain.Entities
          public int LevelId { get; set; }
         public Level Level { get; set; }
 
+        public bool IsActive { get; set; } = false;
+
         public ICollection<OfferedCourse> OfferedCourses { get; set; }
     }
 }

@@ -14,6 +14,8 @@ namespace Application.Interfaces
         Task<IEnumerable<Level>> GetDepartmentsWithLevelAsync(int DepartmentID);
         Task<IEnumerable<LevelWithSemesterDTO>> GetLevelWithSemesterAsync();
         Task<LevelWithSemesterDTO> GetLevelWithSemesterAsync(int levelId);
+
         Task<IEnumerable<SemesterDTO>> GetSemestersByLevelIdAsync(int levelId);
+        Task<bool> IsLevelNameExistsInDepartment(string levelName,int departmentId);
     }
 }

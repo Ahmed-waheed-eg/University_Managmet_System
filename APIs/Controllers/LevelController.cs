@@ -53,6 +53,23 @@ namespace APIs.Controllers
         }
 
 
+        [HttpPost]
+        [Route("CreateWithSemester")]
+        public async Task<IActionResult> CreateWithSemester([FromBody] LevelDTO dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var (success, id, message) = await _levelService.CreateWithSemesterAsync(dto);
+            if (success)
+            {
+                return CreatedAtAction(nameof(GetById), new { id = id }, new { success = true, id = id, message = message });
+            }
+            return BadRequest(new { success = false, message = message });
+        }
+
+
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] LevelDTO dto)
         {
