@@ -22,16 +22,19 @@ namespace APIs.Extensions
             services.AddScoped<SemesterServices>();
             services.AddScoped<DepartmentService>();
             services.AddScoped<CreatedUseresServices>();
+            services.AddScoped<OfferedCousreServices>();
             services.AddScoped<IUnitOfWork, UniteOfWork>();
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IAdminRepository, AdminRepository>();
             services.AddScoped<ILevelRepositiry, LevelReopsitoriy>();
             services.AddScoped<ICourseRepository, CourseRepository>();
+            services.AddScoped<IStudentRepository, StudentRepository>();
             services.AddScoped<ISemesterRepository, SemesterRepository>();
             services.AddScoped<IDepartmentRepositiry, DepartmetRepository>();
             services.AddScoped<ISuperAdminRepository, SuperAdminRepository>();
-      
+            services.AddScoped<IOfferedCourseRepository, OfferedCourseRepository>();
+
 
             return services;
         }

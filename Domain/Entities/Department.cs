@@ -13,6 +13,7 @@ namespace Domain.Entities
         public string Description { get; set; }
 
         public ICollection<Level> Levels { get; set; }
+        public ICollection<Student> Students { get; set; }
         public ICollection<OfferedCourse> OfferedCourses { get; set; }
     }
 }

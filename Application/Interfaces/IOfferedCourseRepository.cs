@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using Domain.Entities;
 using System.Linq;
 using System.Text;
+using Domain.Entities;
 using System.Threading.Tasks;
 
 namespace Application.Interfaces
 {
-    public interface ICourseRepository : IRepository<Course>
+    public interface IOfferedCourseRepository : IRepository<OfferedCourse>
     {
-        Task<Course> GetByCodeAsync(string Code);
     }
 }

@@ -14,7 +14,8 @@ namespace Application.Services
         public async Task<(bool Success, int id, string ErrorMessage)> CreateAsync(CourseDTO dto)
         {
             var exists = await courseRepository.GetByNameAsync(dto.Name);
-            if (exists != null)
+            var existsCode = await courseRepository.GetByCodeAsync(dto.Code);
+            if (exists != null|| existsCode!=null)
             {
                 return (false, 0, "This Course already exists.");
             }
@@ -92,8 +93,43 @@ namespace Application.Services
             };
         }
         
+        public async Task<PaginationDTO<CourseDTO>> GetAllAsync(int pageNumber, int pageSize)
+        {
+            var pagination = await courseRepository.GetAllAsync(pageNumber, pageSize);
+            return new PaginationDTO<CourseDTO>
+            {
+                values = pagination.values.Select(c => new CourseDTO
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Code = c.Code,
+                    Hours = c.Hours,
+                    Description = c.Description
+                }),
+                TotalCount = pagination.TotalCount,
+                PageNumber = pagination.PageNumber,
+                PageSize = pagination.PageSize
+            };
+        }
+        public async Task<CourseDTO> GetByCodeAsync(string code)
+        {
+            var course = await courseRepository.GetByCodeAsync(code);
+            if (course == null)
+            {
+                return null;
+            }
+            return new CourseDTO
+            {
+                Id = course.Id,
+                Name = course.Name,
+                Code = course.Code,
+                Hours = course.Hours,
+                Description = course.Description
+            };
+        }
 
 
 
-    }
+
+}
 }

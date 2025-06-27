@@ -18,7 +18,10 @@ namespace Infrastructure.Data.Configuration
             builder.Property(x => x.Name).IsRequired().HasMaxLength(100);
             builder.Property(x => x.Email).IsRequired().HasMaxLength(100);
             builder.Property(x => x.PasswordHash).IsRequired();
-
+            builder.HasOne(x => x.Department)
+                   .WithMany(d => d.Students)
+                   .HasForeignKey(x => x.DepartmentId)
+                   .OnDelete(DeleteBehavior.Cascade);
 
         }
     }

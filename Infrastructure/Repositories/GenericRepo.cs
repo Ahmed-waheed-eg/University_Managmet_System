@@ -8,6 +8,7 @@ using Application.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using Application.DTOs;
 
 
 namespace Infrastructure.Repositories
@@ -61,6 +62,36 @@ namespace Infrastructure.Repositories
             return await _dbSet.ToListAsync();
         }
 
-      
+        public async Task<PaginationDTO<T>> GetAllAsync(int pageNumber, int pageSize)
+        {
+
+            var totalCount = await _dbSet.CountAsync();
+            var values = await _dbSet.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+            return await Task.FromResult(new PaginationDTO<T>
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = totalCount,
+                values = values
+            });
+        }
+
+        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _dbSet.Where(predicate).ToListAsync();
+        }
+
+
+        public async Task<T> GetByAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _dbSet.FirstOrDefaultAsync(predicate);
+        }
+
+
+        public async Task<T> GetByExpesAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _dbSet.FirstOrDefaultAsync(predicate);
+        }
+
     }
 }

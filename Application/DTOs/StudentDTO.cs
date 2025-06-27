@@ -4,21 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Entities
+namespace Application.DTOs
 {
-    public class Student
+    public class StudentDTO
     {
-
         public int Id { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
-        public string PasswordHash { get; set; }
+       
         public int NationalId { get; set; }
 
         public int DepartmentId { get; set; }
-        public Department Department { get; set; }
-        public ICollection<Enrollment> Enrollments { get; set; } 
 
-       
     }
 }

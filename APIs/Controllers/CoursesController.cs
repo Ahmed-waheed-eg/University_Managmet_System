@@ -21,6 +21,18 @@ namespace APIs.Controllers
             return NotFound("No courses found.");
         }
 
+        [HttpGet("Pagination/PageNumber({PageNumber}),PageSize({PageSize})")]
+        public async Task<ActionResult<PaginationDTO<CourseDTO>>> GetAll(int PageNumber = 1, int PageSize = 10)
+        {
+            var pagination = await courseServices.GetAllAsync(PageNumber, PageSize);
+            if (pagination.values.Any())
+            {
+                return Ok(pagination);
+            }
+            return NotFound("No courses found.");
+        }
+
+
         [HttpGet("{id}")]
         public async Task<ActionResult<CourseDTO>> GetById(int id)
         {
@@ -75,6 +87,19 @@ namespace APIs.Controllers
                 return Ok(new { success = true, message = message });
             }
             return BadRequest(new { success = false, message = message });
+
+        }
+
+
+        [HttpGet("GetByCode/{code}")]
+        public async Task<ActionResult<CourseDTO>> GetByCode(string code)
+        {
+            var course = await courseServices.GetByCodeAsync(code);
+            if (course == null)
+            {
+                return NotFound("Course not found.");
+            }
+            return Ok(course);
 
         }
     }
