@@ -26,7 +26,7 @@ namespace Application.Services
 
         public async Task<(bool Success, int id, string ErrorMessage)> CreateAsync(LevelDTO dto)
         {
-            var exists = await _levelRepositiry.GetByNameAsync(dto.Name);
+            var exists = await _levelRepositiry.GetByAsync(l => l.Name == dto.Name);
             if (exists != null)
             {
                 return (false, 0, "This Level already exists.");
@@ -45,7 +45,7 @@ namespace Application.Services
         public async Task<(bool Success, int id, string ErrorMessage)> CreateWithSemesterAsync(LevelDTO dto)
         {
             var DepartEX= await _departmentRepositiry.GetByIdAsync(dto.DepartmentId);
-            var exists = await _levelRepositiry.IsLevelNameExistsInDepartment(dto.Name, dto.DepartmentId);
+            var exists = await _levelRepositiry.AnyAsync(l => l.Name == dto.Name && l.DepartmentId == dto.DepartmentId);
             if (exists)
             {
                 return (false, 0, "This Level already exists.");
@@ -100,7 +100,7 @@ namespace Application.Services
             {
                 return (false, "This ID not found.");
             }
-            var exists = await _levelRepositiry.GetByNameAsync(dto.Name);
+            var exists = await _levelRepositiry.GetByAsync(l => l.Name == dto.Name);
             if (exists != null && exists.Id != dto.Id)
             {
                 return (false, "This Level already exists.");
@@ -128,7 +128,7 @@ namespace Application.Services
 
         public async Task<IEnumerable<LevelDTO>> GetAllAsync(int DepartmentID)
         {
-            var levels = await _levelRepositiry.GetDepartmentsWithLevelAsync(DepartmentID);
+            var levels = await _levelRepositiry.GetAllAsync(d=>d.DepartmentId==DepartmentID);
             return levels.Select(l => new LevelDTO { Id = l.Id, Name = l.Name, DepartmentId = l.DepartmentId });
         }
 

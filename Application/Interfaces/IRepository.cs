@@ -18,13 +18,11 @@ namespace Application.Interfaces
         void Delete(T Entity);
         public void Commit();
         Task<bool> AnyAsync(Expression<Func<T, bool>> predicate);
-        Task<T> GetByNameAsync(string name);
         Task<IEnumerable<T>> GetAllAsync();
         
         Task<PaginationDTO<T>> GetAllAsync(int pageNumber, int pageSize);
 
         //new with Expression
         Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> predicate);
-        Task<T> GetByExpesAsync(Expression<Func<T, bool>> predicate);
     }
 }

@@ -51,11 +51,6 @@ namespace Infrastructure.Repositories
             return await _context.Set<T>().AnyAsync(predicate);
         }
 
-        public async Task<T> GetByNameAsync(string name)
-        {
-            return await _dbSet.FirstOrDefaultAsync(e => EF.Property<string>(e, "Name") == name);
-
-        }
 
         public async Task<IEnumerable<T>> GetAllAsync()
         {
@@ -88,10 +83,7 @@ namespace Infrastructure.Repositories
         }
 
 
-        public async Task<T> GetByExpesAsync(Expression<Func<T, bool>> predicate)
-        {
-            return await _dbSet.FirstOrDefaultAsync(predicate);
-        }
+    
 
     }
 }

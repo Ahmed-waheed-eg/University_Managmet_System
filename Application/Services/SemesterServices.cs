@@ -21,8 +21,8 @@ namespace Application.Services
 
         public async Task<(bool Success, int id, string ErrorMessage)> CreateAsync(SemesterDTO dto)
         {
-            var exists = await _semesterRepository.GetByNameAsync(dto.Name);
-            if (exists != null)
+            var exists = await _semesterRepository.AnyAsync(s => s.Name == dto.Name);
+            if (exists)
             {
                 return (false, 0, "This Semester already exists.");
             }
@@ -31,7 +31,7 @@ namespace Application.Services
                 return (false, 0, "Invalid Level ID.");
             }
             // Check if the Level exists
-            var levelExists = await _semesterRepository.CheckLevelExistsAsync(dto.LevelId);
+            var levelExists = await _semesterRepository.AnyAsync(l=>l.Id==dto.LevelId);
             if (!levelExists)
             {
                 return (false, 0, "Level ID does not exist.");
@@ -90,7 +90,7 @@ namespace Application.Services
 
         public async Task<IEnumerable<SemesterDTO>> GetAllByLevelIdAsync(int levelId)
         {
-            var semesters = await _semesterRepository.GetAllByLevelIdAsync(levelId);
+            var semesters = await _semesterRepository.GetAllAsync(s=>s.LevelId==levelId);
             return semesters.Select(s => new SemesterDTO
             {
                 Id = s.Id,
@@ -115,7 +115,7 @@ namespace Application.Services
             }
             semester.LevelId = dto.LevelId;
             // Check if the Level exists
-            var levelExists = await _semesterRepository.CheckLevelExistsAsync(dto.LevelId);
+            var levelExists = await _semesterRepository.AnyAsync(l=>l.Id == dto.LevelId);
             if (!levelExists)
             {
                 return (false, "Level ID does not exist.");

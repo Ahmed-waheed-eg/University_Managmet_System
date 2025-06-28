@@ -24,12 +24,12 @@ namespace Application.Services
             {
                 return (false, 0, "This Offered Course already exists.");
             }
-            var CourseExists= await _courseRepository.GetByExpesAsync(c => c.Id == CourseId);
+            var CourseExists= await _courseRepository.GetByAsync(c => c.Id == CourseId);
             if (CourseExists == null)
             {
                 return (false, 0, "This Course does not exist.");
             }
-            var Semester = await _semesterRepository.GetByExpesAsync(s => s.Id == SemesterID);
+            var Semester = await _semesterRepository.GetByAsync(s => s.Id == SemesterID);
             if (Semester == null)
             {
                 return (false, 0, "This Semester does not exist.");

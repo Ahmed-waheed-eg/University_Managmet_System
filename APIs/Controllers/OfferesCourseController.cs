@@ -11,6 +11,11 @@ namespace APIs.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(int CourseId, int SemesterID)
         {
+            if(CourseId <= 0 || SemesterID <= 0)
+            {
+                return BadRequest("Invalid CourseId or SemesterID.");
+            }
+
             var (success, id, message) = await _offeredCousreServices.CreateAsync(CourseId, SemesterID);
             if (success)
             {

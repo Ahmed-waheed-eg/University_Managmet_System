@@ -9,6 +9,5 @@ namespace Application.Interfaces
 {
     public interface IUseresInterface<T> where T : class
     {
-        Task<T> GetByEmailAsync(string email);
     }
 }

@@ -19,11 +19,5 @@ namespace Infrastructure.Repositories
             _context = context;
         }
 
-        public Task<SuperAdmin> GetByEmailAsync(string email)
-        {
-
-            return _context.SuperAdmins
-                .FirstOrDefaultAsync(admin => admin.Email == email);
-        }
     }
 }

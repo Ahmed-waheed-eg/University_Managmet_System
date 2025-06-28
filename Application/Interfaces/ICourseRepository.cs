@@ -9,6 +9,5 @@ namespace Application.Interfaces
 {
     public interface ICourseRepository : IRepository<Course>
     {
-        Task<Course> GetByCodeAsync(string Code);
     }
 }

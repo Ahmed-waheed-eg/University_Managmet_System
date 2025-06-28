@@ -5,18 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
-    public class CourseRepository : GenericRepo<Course>, ICourseRepository
+    public class CourseRepository(ApplicationDbContext _context) : GenericRepo<Course>(_context), ICourseRepository
     {
-        private readonly ApplicationDbContext _context;
-        public CourseRepository(ApplicationDbContext context) : base(context)
-        {
-            this._context = context;
-        }
-
-        public Task<Course> GetByCodeAsync(string Code)
-        {
-
-            return _context.Courses.FirstOrDefaultAsync(c => c.Code == Code);
-        }
     }
 }

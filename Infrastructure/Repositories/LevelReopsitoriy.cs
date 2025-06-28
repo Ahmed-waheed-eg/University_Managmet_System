@@ -20,14 +20,7 @@ namespace Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Level>> GetDepartmentsWithLevelAsync(int DepartmentID)
-        {
-            return await _context.Levels
-                .Where(x => x.DepartmentId == DepartmentID)
-                .OrderBy(x => x.Name)
-                .ToListAsync();
-        }
-
+    
         public async Task<IEnumerable<LevelWithSemesterDTO>> GetLevelWithSemesterAsync()
         {
             return await _context.Levels.Include(x => x.Semesters).Select(x => new LevelWithSemesterDTO
@@ -63,23 +56,6 @@ namespace Infrastructure.Repositories
                 }).FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<SemesterDTO>> GetSemestersByLevelIdAsync(int levelId)
-        {
-            return await _context.Semesters
-                .Where(s => s.LevelId == levelId)
-                .Select(s => new SemesterDTO
-                {
-                    Id = s.Id,
-                    LevelId = s.LevelId,    
-                    Name = s.Name,
-                }).ToListAsync();
-        }
-
-
-        public async Task<bool> IsLevelNameExistsInDepartment(string levelName, int departmentId)
-        {
-            return await _context.Levels.AnyAsync(l => l.Name == levelName && l.DepartmentId == departmentId);
-        }
 
 
     }

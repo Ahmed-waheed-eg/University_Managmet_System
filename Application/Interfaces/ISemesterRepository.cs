@@ -9,10 +9,8 @@ namespace Application.Interfaces
 {
     public interface ISemesterRepository : IRepository<Semester>
     {
-        Task<bool> CheckLevelExistsAsync(int levelId);
-        
+      
        
-        Task<IEnumerable<Semester>> GetAllByLevelIdAsync(int levelId);
         Task<bool> ActiveSemesterAsync(int SemesterID);
 
     }

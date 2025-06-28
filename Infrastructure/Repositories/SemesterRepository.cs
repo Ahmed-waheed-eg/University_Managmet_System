@@ -14,28 +14,6 @@ namespace Infrastructure.Repositories
     {
         private readonly ApplicationDbContext _context = context;
 
-        public Task<bool> CheckLevelExistsAsync(int levelId)
-        {
-
-            return _context.Levels.AnyAsync(l => l.Id == levelId);
-        }
-
-        public async Task<IEnumerable<Semester>> GetAllAsync()
-        {
-            return await _context.Semesters.OrderBy(x => x.Name).ToListAsync();
-
-        }
-
-        public async Task<IEnumerable<Semester>> GetAllByLevelIdAsync(int levelId)
-        {
-
-            return await _context.Semesters
-                .Where(s => s.LevelId == levelId)
-                .OrderBy(s => s.Name)
-                .ToListAsync();
-
-        }
-
         public async Task<bool> ActiveSemesterAsync(int semesterID)
         {
             var semester = await _context.Semesters.FindAsync(semesterID);

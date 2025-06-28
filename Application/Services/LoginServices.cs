@@ -19,7 +19,7 @@ namespace Application.Services
         public async Task<AuthresponsetDTO> LoginSuperAdminAsync(string Email, string password)
         {
 
-            var superAdmin = await _superAdminRepository.GetByEmailAsync(Email);
+            var superAdmin = await _superAdminRepository.GetByAsync(s=>s.Email==Email);
             if (superAdmin == null)
             {
                 return null; // User not found
@@ -41,7 +41,7 @@ namespace Application.Services
 
         public async Task<AuthresponsetDTO> LoginAdminAsync(string Email, string password)
         {
-            var admin = await _adminRepository.GetByEmailAsync(Email);
+            var admin = await _adminRepository.GetByAsync(s => s.Email == Email);
             if (admin == null)
             {
                 return null; // User not found

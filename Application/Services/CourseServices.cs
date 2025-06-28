@@ -13,9 +13,9 @@ namespace Application.Services
     {
         public async Task<(bool Success, int id, string ErrorMessage)> CreateAsync(CourseDTO dto)
         {
-            var exists = await courseRepository.GetByNameAsync(dto.Name);
-            var existsCode = await courseRepository.GetByCodeAsync(dto.Code);
-            if (exists != null|| existsCode!=null)
+            var exists = await courseRepository.AnyAsync(a => a.Name == dto.Name);
+            var existsCode = await courseRepository.AnyAsync(a=>a.Code==dto.Code);
+            if (exists || existsCode)
             {
                 return (false, 0, "This Course already exists.");
             }
@@ -113,7 +113,7 @@ namespace Application.Services
         }
         public async Task<CourseDTO> GetByCodeAsync(string code)
         {
-            var course = await courseRepository.GetByCodeAsync(code);
+            var course = await courseRepository.GetByAsync(c => c.Code == code);
             if (course == null)
             {
                 return null;

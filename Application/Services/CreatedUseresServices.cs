@@ -15,10 +15,14 @@ namespace Application.Services
 
         public async Task<(bool Success, int id, string ErrorMessage)> CreateSuperAdmin(CreatesdUsersDTO superAdmin)
         {
-            var exists = await _superAdminRepository.GetByNameAsync(superAdmin.Name);
+            var exists = await _superAdminRepository.GetByAsync(a => a.Name == superAdmin.Name);
             if (exists != null)
             {
                 return (false, 0, "This User already Exist.");
+            }
+            var existsEmail = await _superAdminRepository.GetByAsync(a => a.Email == superAdmin.Email);
+            if (existsEmail != null) {
+                return (false, 0, "This Email already Exist.");
             }
 
             var SuperAdmin=new SuperAdmin
@@ -41,10 +45,15 @@ namespace Application.Services
 
         public async Task<(bool Success, int id, string ErrorMessage)> CreateAdmin(CreatesdUsersDTO admin)
         {
-            var exists = await _adminRepository.GetByNameAsync(admin.Name);
+            var exists = await _adminRepository.GetByAsync(a => a.Name == admin.Name);
             if (exists != null)
             {
                 return (false, 0, "This User already Exist.");
+            }
+            var existsEmail = await _adminRepository.GetByAsync(a => a.Email == admin.Email);
+            if (existsEmail != null)
+            {
+                return (false, 0, "This Email already Exist.");
             }
             var Admin = new Admin
             {
