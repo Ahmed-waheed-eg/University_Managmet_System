@@ -17,5 +17,6 @@ namespace Domain.Entities
 
 
         public ICollection<OfferedCourse> OfferedCourses { get; set; }
+        public ICollection<Enrollment> Enrollments { get; set; }
     }
 }

@@ -23,7 +23,6 @@ namespace Domain.Entities
 
         public bool IsActive { get; set; }=true;
 
-        public ICollection<Enrollment> Enrollments { get; set; } 
 
     }
 }

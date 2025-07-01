@@ -4,6 +4,7 @@ using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250630041100_UpdateRelationAcademic")]
+    partial class UpdateRelationAcademic
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,51 @@ namespace Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Domain.Entities.AcademicRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("GPA")
+                        .HasColumnType("float");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsCurrent")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("LevelId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
+
+                    b.Property<int>("semesterId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("LevelId");
+
+                    b.HasIndex("StudentId");
+
+                    b.HasIndex("semesterId");
+
+                    b.ToTable("AcademicRecords", (string)null);
+                });
 
             modelBuilder.Entity("Domain.Entities.Admin", b =>
                 {
@@ -119,6 +167,9 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("AcademicRecordId")
+                        .HasColumnType("int");
+
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
 
@@ -135,14 +186,11 @@ namespace Infrastructure.Migrations
                     b.Property<bool>("IsPassed")
                         .HasColumnType("bit");
 
-                    b.Property<int>("StudentId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("CourseId");
+                    b.HasIndex("AcademicRecordId");
 
-                    b.HasIndex("StudentId");
+                    b.HasIndex("CourseId");
 
                     b.ToTable("Enrollments", (string)null);
                 });
@@ -311,23 +359,58 @@ namespace Infrastructure.Migrations
                     b.ToTable("SuperAdmins", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Entities.AcademicRecord", b =>
+                {
+                    b.HasOne("Domain.Entities.Department", "Department")
+                        .WithMany("AcademicRecords")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Level", "Level")
+                        .WithMany("AcademicRecords")
+                        .HasForeignKey("LevelId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Student", "Student")
+                        .WithMany("AcademicRecords")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Semester", "Semester")
+                        .WithMany("AcademicRecords")
+                        .HasForeignKey("semesterId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Department");
+
+                    b.Navigation("Level");
+
+                    b.Navigation("Semester");
+
+                    b.Navigation("Student");
+                });
+
             modelBuilder.Entity("Domain.Entities.Enrollment", b =>
                 {
+                    b.HasOne("Domain.Entities.AcademicRecord", "AcademicRecord")
+                        .WithMany("Enrollments")
+                        .HasForeignKey("AcademicRecordId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("Domain.Entities.Course", "Course")
                         .WithMany("Enrollments")
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Student", "Student")
-                        .WithMany("Enrollments")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                    b.Navigation("AcademicRecord");
 
                     b.Navigation("Course");
-
-                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("Domain.Entities.Level", b =>
@@ -398,6 +481,11 @@ namespace Infrastructure.Migrations
                     b.Navigation("Department");
                 });
 
+            modelBuilder.Entity("Domain.Entities.AcademicRecord", b =>
+                {
+                    b.Navigation("Enrollments");
+                });
+
             modelBuilder.Entity("Domain.Entities.Course", b =>
                 {
                     b.Navigation("Enrollments");
@@ -407,6 +495,8 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Department", b =>
                 {
+                    b.Navigation("AcademicRecords");
+
                     b.Navigation("Levels");
 
                     b.Navigation("OfferedCourses");
@@ -416,6 +506,8 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Level", b =>
                 {
+                    b.Navigation("AcademicRecords");
+
                     b.Navigation("OfferedCourses");
 
                     b.Navigation("Semesters");
@@ -423,12 +515,14 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Semester", b =>
                 {
+                    b.Navigation("AcademicRecords");
+
                     b.Navigation("OfferedCourses");
                 });
 
             modelBuilder.Entity("Domain.Entities.Student", b =>
                 {
-                    b.Navigation("Enrollments");
+                    b.Navigation("AcademicRecords");
                 });
 #pragma warning restore 612, 618
         }

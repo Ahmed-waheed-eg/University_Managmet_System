@@ -31,7 +31,7 @@ namespace Application.Services
             {
                 return (false, 0, "This Level already exists.");
             }
-            var level = new Level { Name = dto.Name, DepartmentId = dto.DepartmentId };
+            var level = new Level { Name = dto.Name,order=dto.Order, DepartmentId = dto.DepartmentId };
             await _levelRepositiry.AddAsync(level);
             if (await _unitOfWork.IsCompleteAsync())
             {
@@ -54,16 +54,16 @@ namespace Application.Services
             {
                 return (false, 0, "This Department does not exist.");
             }
-            var level = new Level { Name = dto.Name, DepartmentId = dto.DepartmentId };
+            var level = new Level { Name = dto.Name,order=dto.Order, DepartmentId = dto.DepartmentId };
             await _levelRepositiry.AddAsync(level);
             if (await _unitOfWork.IsCompleteAsync())
             {
                 // Create default semesters for the new level
-                for (int i = 1; i <= 3; i++) // Assuming 2 semesters per level
+                for (int i = 1; i <= 2; i++) // Assuming 2 semesters per level
                 {
                     var semester = new Semester
                     {
-                        Name = $"Semester {i},{level.Name}",
+                        Name = $"Semester{i},Level{level.order}",
                         LevelId = level.Id,
                         
                     };
@@ -132,9 +132,9 @@ namespace Application.Services
             return levels.Select(l => new LevelDTO { Id = l.Id, Name = l.Name, DepartmentId = l.DepartmentId });
         }
 
-        public async Task<IEnumerable<LevelWithSemesterDTO>> GetLevelWithSemesterAsync()
+        public async Task<IEnumerable<LevelWithSemesterDTO>> GetLevelsWithSemesterAsync(int DepartmentID)
         {
-            return await _levelRepositiry.GetLevelWithSemesterAsync();
+            return await _levelRepositiry.GetLevelsWithSemesterAsync(DepartmentID);
         }
         
         public async Task<LevelWithSemesterDTO> GetLevelWithSemesterAsync(int levelId)

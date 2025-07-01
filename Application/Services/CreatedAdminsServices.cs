@@ -5,7 +5,7 @@ using Application.DTOs;
 namespace Application.Services
 {
 
-    public class CreatedUseresServices(
+    public class CreatedAdminsServices(
         ISuperAdminRepository _superAdminRepository,
         IAdminRepository _adminRepository,
         IUnitOfWork _unitOfWork,

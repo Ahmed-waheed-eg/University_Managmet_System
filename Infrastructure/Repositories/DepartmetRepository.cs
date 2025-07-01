@@ -19,14 +19,13 @@ namespace Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Department>> GetAllAsync()
+        public Task<Department> GetDepartmentWithLevelsAndSemestersAsync(int departmentId)
         {
-           return await _context.Departments.OrderBy(x => x.Name).ToListAsync();
+
+            return _context.Departments
+                .Include(d => d.Levels)
+                    .ThenInclude(l => l.Semesters)
+                .FirstOrDefaultAsync(d => d.Id == departmentId);
         }
-
-      
-
-       
-       
     }
 }

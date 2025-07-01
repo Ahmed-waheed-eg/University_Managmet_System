@@ -15,16 +15,6 @@ namespace APIs.Controllers
             _levelService = levelService;
         }
 
-        [HttpGet("GetAll")]
-        public async Task<ActionResult<IEnumerable<LevelWithSemesterDTO>>> GetAll()
-        {
-            var levels = await _levelService.GetLevelWithSemesterAsync();
-            if (levels.Any())
-            {
-                return Ok(levels);
-            }
-            return NotFound("No levels found.");
-        }
 
         [HttpGet("GetById/{id}")]
         public async Task<ActionResult<LevelWithSemesterDTO>> GetById(int id)
@@ -54,7 +44,7 @@ namespace APIs.Controllers
 
 
         [HttpPost]
-        [Route("CreateWithSemester")]
+        [Route("CreateWithSemester/")]
         public async Task<IActionResult> CreateWithSemester([FromBody] LevelDTO dto)
         {
             if (!ModelState.IsValid)
@@ -107,5 +97,40 @@ namespace APIs.Controllers
             }
             return NotFound("No levels found for this department.");
         }
+
+
+        [HttpGet("GetLevelsWithSemester/{departmentId}")]
+        public async Task<ActionResult<IEnumerable<LevelWithSemesterDTO>>> GetLevelsWithSemester(int departmentId)
+        {
+            if (departmentId <= 0)
+            {
+                return BadRequest("Invalid department ID.");
+            }
+            var levels = await _levelService.GetLevelsWithSemesterAsync(departmentId);
+            if (levels.Any())
+            {
+                return Ok(levels);
+            }
+            return NotFound("No levels with semesters found for this department.");
+
+        }
+
+        [HttpGet("GetLevelWithSemester/{levelId}")]
+        public async Task<ActionResult<LevelWithSemesterDTO>> GetLevelWithSemester(int levelId)
+        {
+            if (levelId <= 0)
+            {
+                return BadRequest("Invalid level ID.");
+            }
+            var level = await _levelService.GetLevelWithSemesterAsync(levelId);
+            if (level != null)
+            {
+                return Ok(level);
+            }
+            return NotFound("No level with semesters found for this ID.");
+
+
+        }
     }
+
 }

@@ -5,7 +5,7 @@ using System.Text;
 using Domain.Enums;
 using Application.Setting;
 using Microsoft.IdentityModel.Tokens;
-using Application.Setting;
+
 using Jose;
 
 public  class TokenService 

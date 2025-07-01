@@ -58,6 +58,7 @@ namespace Application.Services
             return new OfferedCoursesDTO
             {
                 Id = offeredCourse.Id,
+                CourseId = course.Id,
                 CourseName = course.Name
             };
         }
@@ -92,6 +93,7 @@ namespace Application.Services
                 result.Add(new OfferedCoursesDTO
                 {
                     Id = offeredCourse.Id,
+                    CourseId = course.Id,
                     CourseName = course.Name
                 });
             }
@@ -114,6 +116,7 @@ namespace Application.Services
                 result.Add(new OfferedCoursesDTO
                 {
                     Id = offeredCourse.Id,
+                    CourseId = course.Id,
                     CourseName = course.Name
                 });
             }
@@ -136,6 +139,7 @@ namespace Application.Services
                 result.Add(new OfferedCoursesDTO
                 {
                     Id = offeredCourse.Id,
+                    CourseId=course.Id,
                     CourseName = course.Name
                 });
             }

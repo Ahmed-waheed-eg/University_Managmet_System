@@ -59,23 +59,44 @@ namespace APIs.Controllers
         }
 
 
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] DepartmentDTO dto)
+
+
+        [HttpPost("CreateWitLevels/")]
+        public async Task<IActionResult> Create([FromForm] CreateDepartmentDTO dto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var (success,id,message)=await _departmentService.Create(dto);
+            var (success,Id,Message)=await _departmentService.CreateWithLevels(dto);
 
             if (success) 
             {
-                return Ok(new {success=true,id=id,message=message});
+                return Ok(new {success=true,id=Id,message=Message});
             }
 
-            return Conflict(new {success=false,message=message});
+            return Conflict(new {success=false,message=Message});
         }
+
+
+        [HttpGet("GetWithAllData/{Id}")]
+        public async Task<ActionResult<DepartmentWithAllDataDTO>> GetWithAllData(int Id)
+        {
+            if (Id <= 0)
+            {
+                return BadRequest(new { success = false, message = "Invalid Department ID." });
+            }
+            var (success, dto, message) = await _departmentService.GetAllDepartmentDitails(Id);
+            if (success)
+            {
+                return Ok(dto);
+            }
+            return BadRequest(new { success = false, message = message });
+        }
+
+
+
 
 
         [HttpPut("Update")]
@@ -88,21 +109,21 @@ namespace APIs.Controllers
             var (success, message) = await _departmentService.UpdateAsync(dto);
             if (success)
             {
-                return Ok(new { success = true, message = message });
+                return Ok(new { success = true, Message = message });
             }
-            return Conflict(new { success = false, message = message });
+            return Conflict(new { success = false, Message = message });
         }
 
 
-        [HttpDelete]
+        [HttpDelete("Delete")]
         public async Task<IActionResult> delete(int id)
         {
             var (success,message)=await _departmentService.DeleteAsync(id);
             if (success)
             {
-                return Ok(new {success=true,message=message});
+                return Ok(new {success=true,Message =message});
             }
-            return Conflict(new {success=false, message=message});
+            return Conflict(new {success=false, Message =message});
         }
     }
 }

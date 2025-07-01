@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 
 namespace Application.Services
 {
@@ -13,10 +14,13 @@ namespace Application.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISemesterRepository _semesterRepository;
-        public SemesterServices(IUnitOfWork unitOfWork, ISemesterRepository semesterRepository)
+        private readonly IMapper _mapper;
+        public SemesterServices(IUnitOfWork unitOfWork, ISemesterRepository semesterRepository,IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _semesterRepository = semesterRepository;
+            _mapper = mapper;
+
         }
 
         public async Task<(bool Success, int id, string ErrorMessage)> CreateAsync(SemesterDTO dto)
@@ -30,13 +34,18 @@ namespace Application.Services
             {
                 return (false, 0, "Invalid Level ID.");
             }
+            var orderExists = await _semesterRepository.AnyAsync(s => s.Order == dto.order && s.LevelId == dto.LevelId);
+            if (orderExists)
+            {
+                return (false, 0, "This order already exists for the specified Level.");
+            }
             // Check if the Level exists
             var levelExists = await _semesterRepository.AnyAsync(l=>l.Id==dto.LevelId);
             if (!levelExists)
             {
                 return (false, 0, "Level ID does not exist.");
             }
-            var semester = new Semester { Name = dto.Name, LevelId = dto.LevelId };
+            var semester = new Semester { Name = dto.Name,Order=dto.order, LevelId = dto.LevelId };
             await _semesterRepository.AddAsync(semester);
             if (await _unitOfWork.IsCompleteAsync())
             {
@@ -67,24 +76,8 @@ namespace Application.Services
             {
                 return (false, null, "This ID not found.");
             }
-            var dto = new SemesterDTO
-            {
-                Id = semester.Id,
-                Name = semester.Name,
-                LevelId = semester.LevelId
-            };
+            var dto = _mapper.Map<SemesterDTO>(semester);
             return (true, dto, "Retrieved Successfully");
-        }
-
-        public async Task<IEnumerable<SemesterDTO>> GetAllAsync()
-        {
-            var semesters = await _semesterRepository.GetAllAsync();
-            return semesters.Select(s => new SemesterDTO
-            {
-                Id = s.Id,
-                Name = s.Name,
-                LevelId = s.LevelId
-            }).ToList();
         }
 
 
@@ -101,42 +94,52 @@ namespace Application.Services
         }
 
 
-        public async Task<(bool Success, string message)> UpdateAsync(SemesterDTO dto)
+        public async Task<(bool Success,string Message)> SemestersCloseAsync(int SemesterOrder)
         {
-            var semester = await _semesterRepository.GetByIdAsync(dto.Id);
-            if (semester == null)
+            var semesters = await _semesterRepository.GetAllAsync(s => s.Order == SemesterOrder && s.IsActive);
+            if (semesters == null || !semesters.Any())
             {
-                return (false, "This ID not found.");
+                return (false, "No active semesters found for the specified order.");
             }
-            semester.Name = dto.Name;
-            if (dto.LevelId <= 0)
+            foreach (var semester in semesters)
             {
-                return (false, "Invalid Level ID.");
+                semester.IsActive = false;
+                _semesterRepository.Update(semester);
             }
-            semester.LevelId = dto.LevelId;
-            // Check if the Level exists
-            var levelExists = await _semesterRepository.AnyAsync(l=>l.Id == dto.LevelId);
-            if (!levelExists)
-            {
-                return (false, "Level ID does not exist.");
-            }
-            _semesterRepository.Update(semester);
             if (await _unitOfWork.IsCompleteAsync())
             {
-                return (true, "Updated Successfully");
+                return (true, "Semesters closed successfully.");
             }
-            return (false, "Error in saving changes");
+            return (false, "Error in closing semesters.");
         }
 
-        public async Task<bool> ActiveSemesterAsync(int semesterId)
+        public async Task<(bool Success,string message)> SemestersActiveAsync(int SemesterOrder)
         {
-            var semester = await _semesterRepository.GetByIdAsync(semesterId);
-            if (semester == null||semester.IsActive)
+            var semesters = await _semesterRepository.GetAllAsync(s => s.Order == SemesterOrder && !s.IsActive);
+            if (semesters == null || !semesters.Any())
             {
-                return false;
+                return (false, "No inactive semesters found for the specified order.");
             }
-            return await _semesterRepository.ActiveSemesterAsync(semesterId);
+            if (semesters.Any(s => s.IsActive))
+            {
+                return (false, "Some semesters are already active.");
+            }
+
+            foreach (var semester in semesters)
+            {
+                semester.IsActive = true;
+                _semesterRepository.Update(semester);
+            }
+            if (await _unitOfWork.IsCompleteAsync())
+            {
+                return (true, "Semesters opened successfully.");
+            }
+            return (false, "Error in opening semesters.");
         }
+
+
+
+
 
     }
 }

@@ -7,14 +7,12 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs
 {
-    public class SemesterDTO
+    public class CreateDepartmentDTO
     {
-        public int Id { get; set; }
         [Required(ErrorMessage = "The name is required.")]
+        [MaxLength(100, ErrorMessage = "the lenth of name should be no more than 100")]
         public string Name { get; set; }
-        [Required(ErrorMessage = "The LevelID is required.")]
-
-        public int order { get; set; }
-        public int LevelId { get; set; }
+        public string Description { get; set; }
+        public int NumberOfLevels { get; set; } = 4; // Default value set to 4
     }
 }

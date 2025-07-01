@@ -10,7 +10,7 @@ namespace APIs.Controllers
     [Authorize(Roles = "SuperAdmin")]
     [ApiController]
     
-    public class CreatedAdminsController(CreatedUseresServices _createdUseresServices ) : ControllerBase
+    public class CreatedAdminsController(CreatedAdminsServices _createdUseresServices ) : ControllerBase
     {
        
 

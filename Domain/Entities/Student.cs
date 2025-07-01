@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,8 +16,13 @@ namespace Domain.Entities
         public string PasswordHash { get; set; }
         public int NationalId { get; set; }
 
+        public StudentStatus Status { get; set; } = StudentStatus.Active; // Default status is Active
+
         public int DepartmentId { get; set; }
         public Department Department { get; set; }
+
+    
+
         public ICollection<Enrollment> Enrollments { get; set; } 
 
        

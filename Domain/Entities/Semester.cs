@@ -10,7 +10,11 @@ namespace Domain.Entities
     {
         public int Id { get; set; }
         public string Name { get; set; }
-         public int LevelId { get; set; }
+
+
+        public int Order { get; set; } 
+
+        public int LevelId { get; set; }
         public Level Level { get; set; }
 
         public bool IsActive { get; set; } = false;

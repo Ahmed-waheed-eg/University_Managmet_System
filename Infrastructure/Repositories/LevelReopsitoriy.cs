@@ -21,21 +21,24 @@ namespace Infrastructure.Repositories
         }
 
     
-        public async Task<IEnumerable<LevelWithSemesterDTO>> GetLevelWithSemesterAsync()
+        public async Task<IEnumerable<LevelWithSemesterDTO>> GetLevelsWithSemesterAsync(int DepartmentID)
         {
-            return await _context.Levels.Include(x => x.Semesters).Select(x => new LevelWithSemesterDTO
-            {
-                Id = x.Id,
-                Name = x.Name,
-                DepartmentId = x.DepartmentId,
-                Semesters = x.Semesters.Select(s => new SemesterDTO
+            return await _context.Levels
+                .Where(x => x.DepartmentId == DepartmentID)
+                .Select(x => new LevelWithSemesterDTO
                 {
-                    Id = s.Id,
-                    LevelId = s.LevelId,
-                    Name = s.Name,
-
-                }).ToList()
-            }).ToListAsync();
+                    Id = x.Id,
+                    Name = x.Name,
+                    Order = x.order,
+                    DepartmentId = x.DepartmentId,
+                    Semesters = x.Semesters.Select(s => new SemesterDTO
+                    {
+                        Id = s.Id,
+                        LevelId = s.LevelId,
+                        order = s.Order,
+                        Name = s.Name,
+                    }).ToList()
+                }).ToListAsync();
         }
 
         public async Task<LevelWithSemesterDTO> GetLevelWithSemesterAsync(int levelId)
@@ -46,11 +49,13 @@ namespace Infrastructure.Repositories
                 {
                     Id = x.Id,
                     Name = x.Name,
+                    Order = x.order,
                     DepartmentId = x.DepartmentId,
                     Semesters = x.Semesters.Select(s => new SemesterDTO
                     {
                         Id = s.Id,
                         LevelId = s.LevelId,
+                        order=s.Order,
                         Name = s.Name,
                     }).ToList()
                 }).FirstOrDefaultAsync();

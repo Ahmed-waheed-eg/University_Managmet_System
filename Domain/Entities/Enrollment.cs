@@ -8,13 +8,16 @@ namespace Domain.Entities
 {
     public class Enrollment
     {public int Id { get; set; }
+
         public int StudentId { get; set; }
         public Student Student { get; set; }
-        public int OfferedCourseId { get; set; }
-        public OfferedCourse OfferedCourse { get; set; }
+        public int CourseId { get; set; }
+        public Course Course { get; set; }
         public DateTime EnrolledAt { get; set; } = DateTime.UtcNow;
-        public bool IsActive { get; set; } = true;
-        public string Grade { get; set; } // e.g., "A", "B", "C", etc.
+        public bool IsPassed { get; set; } = true;
+        public double Grade { get; set; } 
+        public char GPA { get; set; } // e.g., "A", "B", "C", etc.
+
 
     }
 }

@@ -12,7 +12,7 @@ namespace Application.Interfaces
     public interface ILevelRepositiry : IRepository<Level>
     {
    
-        Task<IEnumerable<LevelWithSemesterDTO>> GetLevelWithSemesterAsync();
+        Task<IEnumerable<LevelWithSemesterDTO>> GetLevelsWithSemesterAsync(int DepartmentID);
         Task<LevelWithSemesterDTO> GetLevelWithSemesterAsync(int levelId);
 
         

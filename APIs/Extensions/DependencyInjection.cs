@@ -19,9 +19,11 @@ namespace APIs.Extensions
             services.AddScoped<TokenService>();
             services.AddScoped<LoginServices>();
             services.AddScoped<CourseServices>();
+            services.AddScoped<StudentServices>();
             services.AddScoped<SemesterServices>();
             services.AddScoped<DepartmentService>();
-            services.AddScoped<CreatedUseresServices>();
+            services.AddScoped<CreateUseresServices>();
+            services.AddScoped<CreatedAdminsServices>();
             services.AddScoped<OfferedCousreServices>();
             services.AddScoped<IUnitOfWork, UniteOfWork>();
             services.AddScoped<IPasswordHasher, PasswordHasher>();
@@ -33,9 +35,11 @@ namespace APIs.Extensions
             services.AddScoped<ISemesterRepository, SemesterRepository>();
             services.AddScoped<IDepartmentRepositiry, DepartmetRepository>();
             services.AddScoped<ISuperAdminRepository, SuperAdminRepository>();
+            services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
             services.AddScoped<IOfferedCourseRepository, OfferedCourseRepository>();
 
 
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             return services;
         }
     }

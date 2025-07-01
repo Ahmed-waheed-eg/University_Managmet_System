@@ -14,6 +14,8 @@ namespace Application.DTOs
         [MaxLength(100, ErrorMessage = "the lenth of name should be no more than 100")]
         public string Name { get; set; }
         [Required(ErrorMessage = "The DepartmentID is required.")]
+
+        public int Order { get; set; }
         public int DepartmentId { get; set; }
     }
 }

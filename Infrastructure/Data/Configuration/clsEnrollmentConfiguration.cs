@@ -17,10 +17,10 @@ namespace Infrastructure.Data.Configuration
             builder.ToTable("Enrollments");
 
             builder.HasOne(e=>e.Student).WithMany(s=>s.Enrollments).HasForeignKey(e => e.StudentId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasOne(e => e.OfferedCourse).WithMany(o => o.Enrollments).HasForeignKey(e => e.OfferedCourseId)
-                .OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(e => e.Course).WithMany(o => o.Enrollments).HasForeignKey(e => e.CourseId)
+                .OnDelete(DeleteBehavior.NoAction);
 
 
         }

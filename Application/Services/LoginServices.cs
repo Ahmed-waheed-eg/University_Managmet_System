@@ -12,6 +12,7 @@ namespace Application.Services
     public class LoginServices 
         (ISuperAdminRepository _superAdminRepository,
         IPasswordHasher _passwordHasher,
+        IStudentRepository _studentRepository,
         IAdminRepository _adminRepository,
         TokenService _tokenService)
     {
@@ -58,6 +59,28 @@ namespace Application.Services
                 Role = "Admin"
             };
         }
+
+
+        public async Task<AuthresponsetDTO> LoginStudentAsync(string Email, string password)
+        {
+            var student = await _studentRepository.GetByAsync(s => s.Email == Email);
+            if (student == null)
+            {
+                return null; // User not found
+            }
+            if (!_passwordHasher.VerifyPassword(password, student.PasswordHash))
+            {
+                return null; // Invalid password
+            }
+            var token = _tokenService.CreateToken(student.Id, student.Name, Domain.Enums.UserRole.Student);
+            return new AuthresponsetDTO
+            {
+                Token = token,
+                FullName = student.Name,
+                Role = "Student"
+            };
+        }
+
 
     }
 }

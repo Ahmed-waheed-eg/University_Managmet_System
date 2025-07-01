@@ -24,7 +24,8 @@ namespace Infrastructure.Data
 
         public DbSet<Department> Departments { get; set; }
         public DbSet<Level> Levels { get; set; }
-        public DbSet<Semester> Semesters { get; set; } 
+        public DbSet<Semester> Semesters { get; set; }
+
 
 
         public DbSet<Course> Courses { get; set; }
@@ -32,6 +33,7 @@ namespace Infrastructure.Data
         public DbSet<Enrollment> Enrollments { get; set; }
 
 
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

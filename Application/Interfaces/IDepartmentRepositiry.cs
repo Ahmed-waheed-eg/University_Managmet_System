@@ -9,6 +9,6 @@ namespace Application.Interfaces
 {
     public interface IDepartmentRepositiry : IRepository<Department>
     {
-        
+        Task <Department> GetDepartmentWithLevelsAndSemestersAsync(int departmentId);
     }
 }

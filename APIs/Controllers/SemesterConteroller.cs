@@ -16,16 +16,7 @@ namespace APIs.Controllers
         }
 
 
-        [HttpGet("GetAll")]
-        public async Task<ActionResult<IEnumerable<SemesterDTO>>> GetAll()
-        {
-            var semesters = await _semesterServices.GetAllAsync();
-            if (semesters.Any())
-            {
-                return Ok(semesters);
-            }
-            return NotFound("No semesters found.");
-        }
+        
         [HttpGet("GetById/{id}")]
         public async Task<ActionResult<SemesterDTO>> GetById(int id)
         {
@@ -52,22 +43,9 @@ namespace APIs.Controllers
             return BadRequest(new { success = false, message = message });
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Update([FromBody] SemesterDTO dto)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var (success,  message) = await _semesterServices.UpdateAsync(dto);
-            if (success)
-            {
-                return Ok(new { success = true, message = message });
-            }
-            return BadRequest(new { success = false, message = message });
-        }
+     
 
-        [HttpDelete("{id}")]
+        [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             if (id <= 0)
@@ -100,19 +78,34 @@ namespace APIs.Controllers
 
 
 
-        [HttpPost("Activate/{semesterId}")]
-        public async Task<IActionResult> ActivateSemester(int semesterId)
+        [HttpPost("Semesters/{semestersOrder}/open")]
+        public async Task<IActionResult> ActivateSemester(int semestersOrder)
         {
-            if (semesterId <= 0)
+            if (semestersOrder <= 0&& semestersOrder>3)
             {
-                return BadRequest("Invalid semester ID.");
+                return BadRequest("Invalid semester order.");
             }
-            var success = await _semesterServices.ActiveSemesterAsync(semesterId);
+            var (success,Message) = await _semesterServices.SemestersActiveAsync(semestersOrder);
             if (success)
             {
-                return Ok(new { success = true, message = "Semester activated successfully." });
+                return Ok(new { success = true, message = Message });
             }
             return NotFound(new { success = false, message = "Semester not found or activation failed." });
+        }
+
+        [HttpPost("Semesters/{semestersOrder}/close")]
+        public async Task<IActionResult> CloseSemester(int semestersOrder)
+        {
+            if (semestersOrder <= 0 && semestersOrder > 3)
+            {
+                return BadRequest("Invalid semester order.");
+            }
+            var (success, Message) = await _semesterServices.SemestersCloseAsync(semestersOrder);
+            if (success)
+            {
+                return Ok(new { success = true, message = Message });
+            }
+            return NotFound(new { success = false, message = "Semester not found or closure failed." });
         }
 
 
