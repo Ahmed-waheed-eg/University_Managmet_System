@@ -11,7 +11,8 @@ namespace Application.Interfaces
     {
       
        
-        Task<bool> ActiveSemesterAsync(int SemesterID);
+        Task<bool> ActiveSemesterAsync(int SemesterOrder);
+        Task<bool> DeActiveSemesterAsync(int semesterOrder);
 
     }
 }

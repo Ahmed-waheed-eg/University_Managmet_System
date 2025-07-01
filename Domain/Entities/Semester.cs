@@ -19,6 +19,7 @@ namespace Domain.Entities
 
         public bool IsActive { get; set; } = false;
 
+        public ICollection<TermRecord> TermRecords { get; set; }
         public ICollection<OfferedCourse> OfferedCourses { get; set; }
     }
 }

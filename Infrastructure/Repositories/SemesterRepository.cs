@@ -14,36 +14,37 @@ namespace Infrastructure.Repositories
     {
         private readonly ApplicationDbContext _context = context;
 
-        public async Task<bool> ActiveSemesterAsync(int semesterID)
+        public async Task<bool> ActiveSemesterAsync(int semesterOrder)
         {
-            var semester = await _context.Semesters.FindAsync(semesterID);
-            if (semester == null)
+           await _context.Database.ExecuteSqlRawAsync("UPDATE Semesters SET IsActive=0");
+
+            var activeSemester = await _context.Semesters.Where(s => s.Order == semesterOrder).ToListAsync();
+            if (activeSemester.Any())
             {
-                return false;
-            }
-            var currentActiveSemester = await _context.Semesters.Where(s => s.IsActive).ToListAsync();
-            if (currentActiveSemester.Count > 0)
-            {
-                foreach (var item in currentActiveSemester)
+                foreach (var semester in activeSemester)
                 {
-                    item.IsActive = false;
-                    _context.Semesters.Update(item);
+                    semester.IsActive = true;
+                    _context.Semesters.Update(semester);
                 }
             }
-            var ActivatedSemesters = await _context.Semesters.Where(s => s.Name == semester.Name).ToListAsync();
-
-            if (ActivatedSemesters.Count > 0)
-            {
-                foreach (var item in ActivatedSemesters)
-                {
-                    item.IsActive = true;
-                    _context.Semesters.Update(item);
-                }
-            }
-
 
             return await _context.SaveChangesAsync() > 0;
         }
 
+        public async Task<bool> DeActiveSemesterAsync(int semesterOrder)
+        {
+            var Semesters = _context.Semesters.Where(s => s.Order == semesterOrder).ToList();
+            if (Semesters.Any())
+            {
+                foreach (var semester in Semesters)
+                {
+                    semester.IsActive = false;
+                    _context.Semesters.Update(semester);
+                }
+            }
+            return await _context.SaveChangesAsync() > 0;
+
+
+        }
     }
 }

@@ -22,6 +22,7 @@ namespace APIs.Extensions
             services.AddScoped<StudentServices>();
             services.AddScoped<SemesterServices>();
             services.AddScoped<DepartmentService>();
+            services.AddScoped<TermRecordServices>();
             services.AddScoped<CreateUseresServices>();
             services.AddScoped<CreatedAdminsServices>();
             services.AddScoped<OfferedCousreServices>();
@@ -36,6 +37,7 @@ namespace APIs.Extensions
             services.AddScoped<IDepartmentRepositiry, DepartmetRepository>();
             services.AddScoped<ISuperAdminRepository, SuperAdminRepository>();
             services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
+            services.AddScoped<ITermRecoredRepositroy, TermRecordRepository>();
             services.AddScoped<IOfferedCourseRepository, OfferedCourseRepository>();
 
 

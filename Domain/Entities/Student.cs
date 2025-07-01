@@ -23,8 +23,10 @@ namespace Domain.Entities
 
     
 
-        public ICollection<Enrollment> Enrollments { get; set; } 
+        
+        public ICollection<Enrollment> Enrollments { get; set; }
+        public ICollection<TermRecord> TermRecords { get; set; }
 
-       
+
     }
 }

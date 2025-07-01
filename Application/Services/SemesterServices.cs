@@ -94,52 +94,19 @@ namespace Application.Services
         }
 
 
-        public async Task<(bool Success,string Message)> SemestersCloseAsync(int SemesterOrder)
+ 
+
+        public async Task<bool> ActiveSemesterAsync(int semesterOrder)
         {
-            var semesters = await _semesterRepository.GetAllAsync(s => s.Order == SemesterOrder && s.IsActive);
-            if (semesters == null || !semesters.Any())
-            {
-                return (false, "No active semesters found for the specified order.");
-            }
-            foreach (var semester in semesters)
-            {
-                semester.IsActive = false;
-                _semesterRepository.Update(semester);
-            }
-            if (await _unitOfWork.IsCompleteAsync())
-            {
-                return (true, "Semesters closed successfully.");
-            }
-            return (false, "Error in closing semesters.");
+            return await _semesterRepository.ActiveSemesterAsync(semesterOrder);
         }
 
-        public async Task<(bool Success,string message)> SemestersActiveAsync(int SemesterOrder)
+        public async Task<bool> DeActiveSemesterAsync(int semesterOrder)
         {
-            var semesters = await _semesterRepository.GetAllAsync(s => s.Order == SemesterOrder && !s.IsActive);
-            if (semesters == null || !semesters.Any())
-            {
-                return (false, "No inactive semesters found for the specified order.");
-            }
-            if (semesters.Any(s => s.IsActive))
-            {
-                return (false, "Some semesters are already active.");
-            }
-
-            foreach (var semester in semesters)
-            {
-                semester.IsActive = true;
-                _semesterRepository.Update(semester);
-            }
-            if (await _unitOfWork.IsCompleteAsync())
-            {
-                return (true, "Semesters opened successfully.");
-            }
-            return (false, "Error in opening semesters.");
+            return await _semesterRepository.DeActiveSemesterAsync(semesterOrder);
         }
 
 
 
-
-
-    }
+        }
 }

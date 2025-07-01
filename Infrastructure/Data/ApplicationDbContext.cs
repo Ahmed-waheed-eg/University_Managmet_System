@@ -28,6 +28,7 @@ namespace Infrastructure.Data
 
 
 
+        public DbSet<TermRecord> TermRecords { get; set; }
         public DbSet<Course> Courses { get; set; }
         public DbSet<OfferedCourse> OfferedCourses { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
@@ -47,6 +48,7 @@ namespace Infrastructure.Data
             modelBuilder.ApplyConfiguration(new clsLevelConfiguration ());
             modelBuilder.ApplyConfiguration(new clsSemesterConfiguration ());
 
+            modelBuilder.ApplyConfiguration(new clsTermRecordConfiguration());
             modelBuilder.ApplyConfiguration (new clsCourseConfiguration ());
             modelBuilder.ApplyConfiguration(new clsOfferedCourseConfiguration());
             modelBuilder.ApplyConfiguration(new clsEnrollmentConfiguration());
