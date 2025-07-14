@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    public class TermRecordServices
+    public partial class TermRecordServices
         (
              ISemesterRepository _semesterRepository,
              ILevelRepositiry _levelRepositiry,
-            ITermRecoredRepositroy _termRecoredRepositroy,
-            IStudentRepository _studentRepository,
-            IDepartmentRepositiry _departmentRepositiry,
-            IUnitOfWork _unitOfWork
+             ITermRecoredRepositroy _termRecoredRepositroy,
+             IStudentRepository _studentRepository,
+             IDepartmentRepositiry _departmentRepositiry,
+             IUnitOfWork _unitOfWork
         )
     {
         public async Task<TermRecordDTO> GetTermRecordAsync(int id)
@@ -66,7 +66,7 @@ namespace Application.Services
             var isExists = await _termRecoredRepositroy.AnyAsync(t => t.studentId == StudetID );
             if (!isExists)
             {
-                return await CreateFirstTime(student);
+                return await _CreateFirstTime(student);
             }
 
             var LastTermRecord = await _termRecoredRepositroy.GetByAsync(t => t.studentId == StudetID && t.IsCurrent);
@@ -81,160 +81,23 @@ namespace Application.Services
             switch (CurrentSemesterActive.Order)
             {
                 case 1:
-                    return await CreateNextTermRecordForTerm1(student, CurrentSemesterActive,LastTermRecord);
+                    return await _CreateNextTermRecordForTerm1(student, CurrentSemesterActive,LastTermRecord);
                     break;
                 case 2:
-                    return await CreateNextTermRecordForTerm2(student, CurrentSemesterActive, LastTermRecord);
+                    return await _CreateNextTermRecordForTerm2(student, CurrentSemesterActive, LastTermRecord);
                     break;
                 case 3:
-                    return await CreateNextTermRecordForTerm3(student, CurrentSemesterActive, LastTermRecord);
+                    return await _CreateNextTermRecordForTerm3(student, CurrentSemesterActive, LastTermRecord);
                     break;
                 default:
                     return (false, null, "Invalid semester order.");
                     break;
             }
+           
 
         }
 
-
-
-        private async Task<(bool Success, TermRecordDTO DTO, string message)> CreateFirstTime(Student student)
-        {
-            var level = await _levelRepositiry.GetByAsync(l => l.DepartmentId == student.DepartmentId && l.order == 1);
-            if (level == null)
-            {
-                return (false, null, "Level not found for the student's department.");
-            }
-            var semester = await _semesterRepository.GetByAsync(s => s.LevelId == level.Id && s.Order == 1 && s.IsActive);
-            if (semester == null)
-            {
-                return (false, null, "Semester not found for the student's level or it's not Active Semester.");
-            }
-            var termRecord = new TermRecord
-            {
-                SemesterId = semester.Id,
-                studentId = student.Id,
-                IsCurrent = true,
-                IsCompleted = false,
-                GPA = 0.0
-            };
-
-            await _termRecoredRepositroy.AddAsync(termRecord);
-
-            if (await _unitOfWork.IsCompleteAsync())
-            {
-                return (true, new TermRecordDTO
-                {
-                    Id = termRecord.Id,
-                    SemesterId = termRecord.SemesterId,
-                    StudentId = termRecord.studentId,
-                    IsCurrent = termRecord.IsCurrent,
-                    IsCompleted = termRecord.IsCompleted,
-                    GPA = termRecord.GPA
-                }, "Term record created successfully.");
-            }
-            return (false, null, "Failed to create or save term record.");
-        }
-        private async Task<(bool Success, TermRecordDTO DTO, string message)> CreateNextTermRecordForTerm2(Student student,Semester CurrentSemester,TermRecord LastTermRecord)
-        {
-            var TermRecord = new TermRecord
-            {
-                SemesterId = CurrentSemester.Id,
-                studentId = student.Id,
-                IsCurrent = true,
-                IsCompleted = false,
-                GPA = 0.0
-            };
-
-            await _termRecoredRepositroy.AddAsync(TermRecord);
-            LastTermRecord.IsCurrent = false;
-            _termRecoredRepositroy.Update(LastTermRecord);
-            if (await _unitOfWork.IsCompleteAsync())
-            {
-                return (true, new TermRecordDTO
-                {
-                    Id = TermRecord.Id,
-                    SemesterId = TermRecord.SemesterId,
-                    StudentId = TermRecord.studentId,
-                    IsCurrent = TermRecord.IsCurrent,
-                    IsCompleted = TermRecord.IsCompleted,
-                    GPA = TermRecord.GPA
-                }, "Term record created successfully.");
-            }
-            return (false, null, "Failed to create or save term record.");
-
-
-        }
-        private async Task<(bool Success, TermRecordDTO DTO, string message)> CreateNextTermRecordForTerm3(Student student, Semester CurrentSemester, TermRecord LastTermRecord)
-        {
-            var TermRecord = new TermRecord
-            {
-                SemesterId = CurrentSemester.Id,
-                studentId = student.Id,
-                IsCurrent = true,
-                IsCompleted = false,
-                GPA = 0.0
-            };
-            await _termRecoredRepositroy.AddAsync(TermRecord);
-            LastTermRecord.IsCurrent = false;
-            _termRecoredRepositroy.Update(LastTermRecord);
-            if (await _unitOfWork.IsCompleteAsync())
-            {
-                return (true, new TermRecordDTO
-                {
-                    Id = TermRecord.Id,
-                    SemesterId = TermRecord.SemesterId,
-                    StudentId = TermRecord.studentId,
-                    IsCurrent = TermRecord.IsCurrent,
-                    IsCompleted = TermRecord.IsCompleted,
-                    GPA = TermRecord.GPA
-                }, "Term record created successfully.");
-            }
-            return (false, null, "Failed to create or save term record.");
-        }
-
-        private async Task<(bool Success, TermRecordDTO DTO, string message)> CreateNextTermRecordForTerm1(Student student, Semester CurrentSemester,TermRecord LastTermRecord)
-        {
-
-            var Levels = await _levelRepositiry.GetAllAsync(l => l.DepartmentId == student.DepartmentId);
-            var LastLevel= await _levelRepositiry.GetByIdAsync(CurrentSemester.LevelId);
-            if (LastLevel.order == Levels.Count())
-            {
-                return (false, null, "This Student is already in the last level of the department.and he gradution");
-            }
-            var NextLevel = Levels.FirstOrDefault(l => l.order == LastLevel.order + 1);
-            var semester = await _semesterRepository.GetByAsync(s => s.LevelId == NextLevel.Id && s.Order == 1 && s.IsActive);
-
-            var TermRecord = new TermRecord
-            {
-                SemesterId = semester.Id,
-                studentId = student.Id,
-                IsCurrent = true,
-                IsCompleted = false,
-                GPA = 0.0
-            };
-            await _termRecoredRepositroy.AddAsync(TermRecord);
-            LastTermRecord.IsCurrent = false;
-            _termRecoredRepositroy.Update(LastTermRecord);
-            if (await _unitOfWork.IsCompleteAsync())
-            {
-                return (true, new TermRecordDTO
-                {
-                    Id = TermRecord.Id,
-                    SemesterId = TermRecord.SemesterId,
-                    StudentId = TermRecord.studentId,
-                    IsCurrent = TermRecord.IsCurrent,
-                    IsCompleted = TermRecord.IsCompleted,
-                    GPA = TermRecord.GPA
-                }, "Term record created successfully.");
-            }
-
-            return (false, null, "Failed to create or save term record.");
-        }
-       
-
-
-
+        //public async Task <(bool Success, TermRecordDTO DTO,string message)>GetAllByUserId
 
 
 

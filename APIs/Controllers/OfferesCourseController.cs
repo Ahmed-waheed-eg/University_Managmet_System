@@ -1,4 +1,5 @@
-﻿using Application.Services;
+﻿using Application.DTOs;
+using Application.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,10 +9,24 @@ namespace APIs.Controllers
     [ApiController]
     public class OfferesCourseController(OfferedCousreServices _offeredCousreServices) : ControllerBase
     {
+
+        [HttpGet("Pagination/PageNumber({PageNumber}),PageSize({PageSize})")]
+        public async Task<ActionResult<PaginationDTO<OfferedCoursesDTO>>> GetAll(int PageNumber = 1, int PageSize = 10)
+        {
+            var pagination = await _offeredCousreServices.GetAllAsync(PageNumber, PageSize);
+            if (pagination.values.Any())
+            {
+                return Ok(pagination);
+            }
+            return NotFound("No offered courses found.");
+        }
+
+
+
         [HttpPost]
         public async Task<IActionResult> Create(int CourseId, int SemesterID)
         {
-            if(CourseId <= 0 || SemesterID <= 0)
+            if (CourseId <= 0 || SemesterID <= 0)
             {
                 return BadRequest("Invalid CourseId or SemesterID.");
             }
@@ -73,13 +88,31 @@ namespace APIs.Controllers
         [HttpGet("DepartmentID/{id}")]
         public async Task<IActionResult> GetByDepartmentId(int id)
         {
-            var offeredCourse = await _offeredCousreServices.GetAllDepartmentLevelAsync(id);
+            var offeredCourse = await _offeredCousreServices.GetAllperDepartmentAsync(id);
             if (!offeredCourse.Any())
             {
                 return NotFound("Offered Course not found.");
             }
             return Ok(offeredCourse);
         }
+
+
+        [HttpGet("StudentID/{id}")]
+        public async Task<IActionResult> GetByStudentId(int id)
+        {
+            var offeredCourse = await _offeredCousreServices.GetAllPerStudentIDAsync(id);
+
+            if (!offeredCourse.Success)
+            {
+                return NotFound(offeredCourse.message);
+            }
+            return Ok(offeredCourse.Item2);
+
+
+        }
+
+
+
 
     }
 }

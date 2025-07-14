@@ -20,6 +20,7 @@ namespace Infrastructure.Data
         public DbSet<SuperAdmin> SuperAdmins { get; set; }
         public DbSet<Admin> Admins { get; set; }
         public DbSet<Student> Students { get; set; }
+        public DbSet<Professor> Professors { get; set; }
 
 
         public DbSet<Department> Departments { get; set; }
@@ -32,7 +33,7 @@ namespace Infrastructure.Data
         public DbSet<Course> Courses { get; set; }
         public DbSet<OfferedCourse> OfferedCourses { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
-
+        public DbSet<Grade> Grades { get; set; }
 
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -42,6 +43,7 @@ namespace Infrastructure.Data
             modelBuilder.ApplyConfiguration(new clsSuperAdminConfiguration());
             modelBuilder.ApplyConfiguration(new clsAdminConfiguration());
             modelBuilder.ApplyConfiguration(new clsStudentConfiguration());
+            modelBuilder.ApplyConfiguration(new clsProfessorConfiguration());
 
 
             modelBuilder.ApplyConfiguration(new clsDepartmentConfiguration ()); 
@@ -52,7 +54,7 @@ namespace Infrastructure.Data
             modelBuilder.ApplyConfiguration (new clsCourseConfiguration ());
             modelBuilder.ApplyConfiguration(new clsOfferedCourseConfiguration());
             modelBuilder.ApplyConfiguration(new clsEnrollmentConfiguration());
-
+            modelBuilder.ApplyConfiguration(new clssGradeConfiguration());
 
         }
 

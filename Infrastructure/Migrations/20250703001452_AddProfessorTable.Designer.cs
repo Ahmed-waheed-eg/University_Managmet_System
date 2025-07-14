@@ -4,6 +4,7 @@ using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250703001452_AddProfessorTable")]
+    partial class AddProfessorTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -129,6 +132,9 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(1)");
 
+                    b.Property<double>("Grade")
+                        .HasColumnType("float");
+
                     b.Property<bool>("IsPassed")
                         .HasColumnType("bit");
 
@@ -147,37 +153,6 @@ namespace Infrastructure.Migrations
                     b.HasIndex("TermRecordId");
 
                     b.ToTable("Enrollments", (string)null);
-                });
-
-            modelBuilder.Entity("Domain.Entities.Grade", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("EnrollmentId")
-                        .HasColumnType("int");
-
-                    b.Property<double>("FinalExamGrad")
-                        .HasColumnType("float");
-
-                    b.Property<double>("MidTermGrad")
-                        .HasColumnType("float");
-
-                    b.Property<double>("QuizGrad")
-                        .HasColumnType("float");
-
-                    b.Property<double>("TotalGrads")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EnrollmentId")
-                        .IsUnique();
-
-                    b.ToTable("Grades", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Level", b =>
@@ -457,17 +432,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("TermRecord");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Grade", b =>
-                {
-                    b.HasOne("Domain.Entities.Enrollment", "Enrollment")
-                        .WithOne("Grade")
-                        .HasForeignKey("Domain.Entities.Grade", "EnrollmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Enrollment");
-                });
-
             modelBuilder.Entity("Domain.Entities.Level", b =>
                 {
                     b.HasOne("Domain.Entities.Department", "Department")
@@ -592,12 +556,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("Professors");
 
                     b.Navigation("Students");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Enrollment", b =>
-                {
-                    b.Navigation("Grade")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Domain.Entities.Level", b =>

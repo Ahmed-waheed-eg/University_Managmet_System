@@ -13,6 +13,7 @@ namespace Application.Services
         (ISuperAdminRepository _superAdminRepository,
         IPasswordHasher _passwordHasher,
         IStudentRepository _studentRepository,
+        IProfessorRepository _professorRepository,
         IAdminRepository _adminRepository,
         TokenService _tokenService)
     {
@@ -78,6 +79,27 @@ namespace Application.Services
                 Token = token,
                 FullName = student.Name,
                 Role = "Student"
+            };
+        }
+
+
+        public async Task<AuthresponsetDTO> LoginProfessorAsync(string Email, string password)
+        {
+            var professor = await _professorRepository.GetByAsync(s => s.Email == Email);
+            if (professor == null)
+            {
+                return null; // User not found
+            }
+            if (!_passwordHasher.VerifyPassword(password, professor.HashPassword))
+            {
+                return null; // Invalid password
+            }
+            var token = _tokenService.CreateToken(professor.Id, professor.Name, Domain.Enums.UserRole.Doctor);
+            return new AuthresponsetDTO
+            {
+                Token = token,
+                FullName = professor.Name,
+                Role = "Doctor"
             };
         }
 

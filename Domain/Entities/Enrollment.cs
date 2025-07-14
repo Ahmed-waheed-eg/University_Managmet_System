@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 namespace Domain.Entities
 {
     public class Enrollment
-    {public int Id { get; set; }
+    {
+        public int Id { get; set; }
 
         public int StudentId { get; set; }
         public Student Student { get; set; }
@@ -19,10 +20,11 @@ namespace Domain.Entities
 
 
         public DateTime EnrolledAt { get; set; } = DateTime.UtcNow;
-        public bool IsPassed { get; set; } = true;
-        public double Grade { get; set; } 
-        public char GPA { get; set; } // e.g., "A", "B", "C", etc.
+        public bool IsPassed { get; set; } = false;
+  
+        
+        public char GPA { get; set; } 
 
-
+        public Grade Grade { get; set; }
     }
 }

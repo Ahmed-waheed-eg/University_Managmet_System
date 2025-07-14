@@ -30,5 +30,18 @@ namespace Infrastructure.Repositories
         
         }
 
+        // with eror mesage 
+        public async Task<(bool Success, string ErrorMessage)> IsCompleteAsyncWithError()
+        {
+            try
+            {
+                int affectedRowa = await _context.SaveChangesAsync();
+                return (affectedRowa > 0, "Operation completed successfully.");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"An error occurred: {ex.Message}");
+            }
+        }
     }
 }

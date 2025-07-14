@@ -10,5 +10,6 @@ namespace Application.Interfaces
     {
         Task<int> CompleteAsync();
         Task<bool> IsCompleteAsync();
+        Task<(bool Success, string ErrorMessage)> IsCompleteAsyncWithError();
     }
 }

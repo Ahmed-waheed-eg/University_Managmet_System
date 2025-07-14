@@ -15,6 +15,7 @@ namespace Domain.Entities
         public ICollection<Level> Levels { get; set; }
         public ICollection<Student> Students { get; set; }
         public ICollection<OfferedCourse> OfferedCourses { get; set; }
- 
+        public ICollection<Professor> Professors { get; set; }
+
     }
 }

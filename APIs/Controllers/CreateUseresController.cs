@@ -26,5 +26,21 @@ namespace APIs.Controllers
             return Ok(new { Id = result.id, Message = result.ErrorMessage });
         }
 
+
+        [HttpPost("CreateProfessor")]
+        public async Task<IActionResult> CreateProfessorAsync([FromBody] CreateProfessorDTO professor)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Invalid professor data.");
+            }
+            var result = await _createUseresServices.CreateProfessor(professor);
+            if (!result.Success)
+            {
+                return BadRequest(result.ErrorMessage);
+            }
+            return Ok(new { Id = result.id, Message = result.ErrorMessage });
+        }
+
     }
 }

@@ -63,5 +63,22 @@ namespace APIs.Controllers
             return Ok(response);
         }
 
+
+
+        [HttpPost("login/Professor")]
+        public async Task<IActionResult> LoginProfessorAsync([FromBody] LoginDTO loginDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Invalid login request.");
+            }
+            var response = await _loginServices.LoginProfessorAsync(loginDto.Email, loginDto.Password);
+            if (response == null)
+            {
+                return Unauthorized("Invalid email or password.");
+            }
+            return Ok(response);
+        }
+
     }
 }

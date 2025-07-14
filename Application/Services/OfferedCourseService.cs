@@ -10,8 +10,8 @@ using System.Threading.Tasks;
 namespace Application.Services
 {
     public class OfferedCousreServices
-        (IOfferedCourseRepository _offeredCourseRepository,IUnitOfWork _unitOfWork,ICourseRepository _courseRepository
-        ,ISemesterRepository _semesterRepository, ILevelRepositiry _levelRepositiry,IDepartmentRepositiry _departmentRepositiry)
+        (IOfferedCourseRepository _offeredCourseRepository,IUnitOfWork _unitOfWork,ICourseRepository _courseRepository, IStudentRepository _studentRepository
+        , ISemesterRepository _semesterRepository, ILevelRepositiry _levelRepositiry,ITermRecoredRepositroy _termRecoredRepositroy)
     {
 
 
@@ -103,7 +103,7 @@ namespace Application.Services
 
         public async Task<IEnumerable<OfferedCoursesDTO>> GetAllPerLevelAsync(int LevelID)
         {
-            var offeredCourses = await _offeredCourseRepository.GetAllAsync(c => c.SemesterId == LevelID);
+            var offeredCourses = await _offeredCourseRepository.GetAllAsync(c => c.LevelId == LevelID);
             if (! offeredCourses.Any())
             {
                 return new List<OfferedCoursesDTO>();
@@ -124,9 +124,9 @@ namespace Application.Services
 
         }
 
-        public async Task<IEnumerable<OfferedCoursesDTO>> GetAllDepartmentLevelAsync(int DepartmentID)
+        public async Task<IEnumerable<OfferedCoursesDTO>> GetAllperDepartmentAsync(int DepartmentID)
         {
-            var offeredCourses = await _offeredCourseRepository.GetAllAsync(c => c.SemesterId == DepartmentID);
+            var offeredCourses = await _offeredCourseRepository.GetAllAsync(c => c.DepartmentId == DepartmentID);
             if (! offeredCourses.Any())
             {
                 return new List<OfferedCoursesDTO>();
@@ -145,6 +145,62 @@ namespace Application.Services
             }
             return result;
 
+        }
+
+
+        public async Task<(bool Success,IEnumerable<OfferedCoursesDTO>,string message)> GetAllPerStudentIDAsync(int StudentID)
+        {
+
+            var StudentEx = await _studentRepository.AnyAsync(s => s.Id == StudentID);
+            if (!StudentEx)
+            {
+                return (false, null, "This Student does not exist.");
+            }
+            var semesterRecord= await _termRecoredRepositroy.GetByAsync(s => s.studentId == StudentID&&s.IsCurrent);
+            if (semesterRecord == null)
+            {
+                return (false, null, "This Student does not have  semester Registeration.");
+            }
+            var semester= await _semesterRepository.GetByIdAsync(semesterRecord.SemesterId);
+            var offeredCourses = await _offeredCourseRepository.GetAllAsync(c => c.SemesterId == semester.Id);
+            if (!offeredCourses.Any())
+            {
+                return (true, new List<OfferedCoursesDTO>(), "No Offered Courses found for this Student.");
+            }
+
+            var result = new List<OfferedCoursesDTO>();
+            foreach (var offeredCourse in offeredCourses)
+            {
+                var course = await _courseRepository.GetByIdAsync(offeredCourse.CourseId);
+                result.Add(new OfferedCoursesDTO
+                {
+                    Id = offeredCourse.Id,
+                    CourseId = course.Id,
+                    CourseName = course.Name
+                });
+            }
+            return (true, result, "Offered Courses retrieved successfully.");
+
+
+
+        }
+
+       
+        public async Task<PaginationDTO<OfferedCoursesDTO>> GetAllAsync(int pageNumber, int pageSize)
+        {
+            var pagination = await _offeredCourseRepository.GetAllAsync(pageNumber, pageSize);
+            return new PaginationDTO<OfferedCoursesDTO>
+            {
+                values = pagination.values.Select(c => new OfferedCoursesDTO
+                {
+                    Id = c.Id,
+                    CourseId = c.CourseId,
+                    CourseName = _courseRepository.GetByIdAsync(c.CourseId).Result?.Name ?? "Unknown Course"
+                }),
+                TotalCount = pagination.TotalCount,
+                PageNumber = pagination.PageNumber,
+                PageSize = pagination.PageSize
+            };
         }
 
     }
